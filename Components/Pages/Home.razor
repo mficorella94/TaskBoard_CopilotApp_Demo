@@ -75,7 +75,7 @@ else
 
     private bool CanAdd => !string.IsNullOrWhiteSpace(newTitle);
 
-    private int Remaining => tasks.Count(t => t.IsDone);
+    private int Remaining => tasks.Count(t => !t.IsDone);
 
     private IEnumerable<TaskItem> Visible => filter switch
     {
