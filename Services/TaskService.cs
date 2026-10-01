@@ -23,7 +23,7 @@ public class TaskService
     {
         lock (_lock)
         {
-            return _tasks.OrderBy(t => t.Id).ToList();
+            return _tasks.OrderBy(t => t.IsDone).ThenBy(t => t.Id).ToList();
         }
     }
 
