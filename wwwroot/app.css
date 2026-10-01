@@ -99,6 +99,14 @@ h1 {
 
 .composer-input:focus { border-color: var(--ink); outline: none; }
 
+.composer-input[aria-invalid="true"] { border-color: var(--danger); }
+
+.composer-error {
+    margin: -0.75rem 0 1.25rem;
+    color: var(--danger);
+    font-weight: 700;
+}
+
 button { font: inherit; cursor: pointer; }
 
 .btn-add {

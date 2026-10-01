@@ -21,11 +21,18 @@
            class="composer-input"
            placeholder="Scrivi un'attività e premi Invio"
            autocomplete="off"
-           @bind="newTitle"
-           @bind:event="oninput"
+           aria-invalid="@(error is null ? "false" : "true")"
+           aria-describedby="@(error is null ? null : "new-task-error")"
+           value="@newTitle"
+           @oninput="OnInput"
            @onkeydown="OnKeyDown" />
-    <button class="btn-add" @onclick="AddTask">Aggiungi</button>
+    <button class="btn-add" disabled="@(!CanAdd)" @onclick="AddTask">Aggiungi</button>
 </section>
+
+@if (error is not null)
+{
+    <p id="new-task-error" class="composer-error" role="alert">@error</p>
+}
 
 <nav class="filters" aria-label="Filtra le attività">
     @foreach (var f in Enum.GetValues<Filter>())
@@ -64,6 +71,9 @@ else
     private IReadOnlyList<TaskItem> tasks = Array.Empty<TaskItem>();
     private Filter filter = Filter.Tutte;
     private string newTitle = string.Empty;
+    private string? error;
+
+    private bool CanAdd => !string.IsNullOrWhiteSpace(newTitle);
 
     private int Remaining => tasks.Count(t => !t.IsDone);
 
@@ -94,10 +104,21 @@ else
     private void AddTask()
     {
         var created = TaskService.Add(newTitle);
-        if (created is null) return;
+        if (created is null)
+        {
+            error = "Inserisci un titolo per l'attività.";
+            return;
+        }
 
+        error = null;
         newTitle = string.Empty;
         Refresh();
+    }
+
+    private void OnInput(ChangeEventArgs e)
+    {
+        newTitle = e.Value?.ToString() ?? string.Empty;
+        error = null;
     }
 
     private void OnKeyDown(KeyboardEventArgs e)
